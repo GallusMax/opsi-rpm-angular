@@ -1,22 +1,41 @@
 (function(){
     var app = angular.module('opsi-swinv', []);
   
-    app.controller('swinvController',function($http){
+    app.controller('swinvController',function($http,$filter){
 	this.products=opsiswp.result;
-	this.baseurl="https://opsi.ub.hsu-hh.de:4447/interface/extend/configed?{%20%22id%22:%201,%20%22method%22:%20%22auditSoftware_getObjects%22,%20%22params%22:%20[]%20}";
+	this.baseurl="/interface?{%20%22id%22:%201,%20%22method%22:%20%22auditSoftware_getObjects%22,%20%22params%22:%20[]%20}";
+	this.baseurl='/interface';
+	this.testurl='/interface?{"id":1,"method":"auditSoftware_getObjects","params":[]}';
+
+	this.auditParams={'id':1,'method':'auditSoftware_getObjects','params':[]};
+
+	this.auditParams.params.push([]);
+	this.auditParams.params.push({"clientId":"dings"});
+
+//	this.getObj={'url':this.baseurl,'params':this.auditParams}; // gets mangled
+
+	this.opsiURL=this.baseurl+"?"+$filter('json')(this.auditParams);
 
 	this.getprods=function(id){
-	    $http.get(this.baseurl).
-		then(function(response){
-		this.products=response.result;
+	    this.opsires="calling.. with "+this.opsiURL;
+	    $http.get(this.opsiURL).
+		success(function(response,stat,head,conf){
+		    this.opsires=response;
+		    this.opsistat=stat;
+		}).
+		error(function(err,stat,head,conf){
+		    this.opsires=err;
+		    this.opsistat=stat;
 		});
+	    
 	};
 
-	this.getprods();
+//	this.getprods();
 
 	
 	this.getfirst=function(){
-
+	    this.opsires="init";
+//	    alert(this.opsires);
 	    return this.products[0];
 	};
 

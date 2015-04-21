@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="opsi-swinv">
 <head>
-    <link rel="stylesheet" type="text/css" href="/wp-content/themes/hsu-web/style.css">
+    <!-- link rel="stylesheet" type="text/css" href="/wp-content/themes/hsu-web/style.css" -->
     <script type="text/javascript" src="angular.js"></script>
     <script type="text/javascript" src="swinv.js"></script>
 
@@ -9,15 +9,24 @@
   </head>
 <body ng-controller="swinvController as sw">
 
-{{sw.baseurl}}
-<div class="swlist"
-<ol>
-<li ng-repeat="swp in sw.products">
-{{swp.name}} 
-<span ng-show="swp.version"> ({{swp.version}})</span>
-</li>
+current base url: {{sw.baseurl}}
+<div class="swlist">
+<table border>
+  <tr><th>#</th><th>name</th><th>swId</th><th>Version</th><th>verantwortlich</th></tr>
 
-</ul>
-<p></div>
+<tr ng-repeat="swp in sw.products">
+<td>{{$index}}
+<td>{{swp.name}} </td>
+<td>{{swp.windowsSoftwareId}}</td>
+<td><span ng-show="swp.version"> ({{swp.version}})</span></td>
+<td></td>
+</tr>
+</table>
+
+<p ng-click="sw.getprods(44)">
+result: {{sw.opsires}}
+<p>
+{{sw.opsistat}}
+</div>
 </body>
 </html>
