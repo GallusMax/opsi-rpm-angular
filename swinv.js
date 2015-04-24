@@ -11,17 +11,46 @@
 
 	this.auditParams={'id':'jsonrpc','method':'auditSoftwareOnClient_getObjects','params':[]};
 	this.logonParams={'id':'1','method':'authenticated','params':[]};
+	this.localinstalledParams={'id':'1','method':'getInstalledLocalBootProductIds_list','params':[]};
+	this.productinfosParams={'id':'1','method':'getProductInfos_hash','params':[]};
 
 	this.auditParams.params.push([]);
 //	this.auditParams.params.push({"clientId":"0024e81bc792.ub.hsu-hh.de"});
 	this.auditParams.params.push({"clientId":"782bcbb49fd9.ub.hsu-hh.de"}); // goihl
 
-	this.getObj={'method':'jsonp','url':baseurl,'params':this.auditParams}; // gets mangled
+	this.clientId="782bcbb49fd9.ub.hsu-hh.de";
 
+	this.getObj={'method':'jsonp','url':baseurl,'params':this.auditParams}; // gets mangled
 
 	opsiURL=baseurl+"?"+$filter('json')(this.auditParams);
 
 	me=this;
+	me['installed']=[];
+	me['productinfos']=[];
+
+	this.opsicall=function(field,method,arg){
+    	    Params={'id':'1','method':method,'params':[]};
+	    if(arg)Params.params[0]=arg;
+	    $http.post(baseurl,Params)
+		.success(function(response,stat,head,conf){
+//		    alert("success: "+$filter('json')(response));
+		    me.opsires="success: "+method;
+		    me.opsiconf=conf;
+		    if(response.error)
+			alert(response.error.message);
+		    else
+			me[field]=response.result;
+		  
+		})
+		.error(function(err,stat,head,conf){
+		    me.opsires="error";
+		    alert("err: "+(err)+stat+head+$filter('json')(conf));
+		    me.opsistat=stat;
+		    me.opsihead=head;
+		    me.opsiconf=conf;
+		});
+
+	};
 
 	this.logon=function(){
 	    $http.post(logonurl,this.logonParams)
@@ -40,7 +69,7 @@
 	    $http.post(baseurl,this.auditParams)
 		.success(function(response,stat,head,conf){
 		   // alert("success: "+response);
-		    me.opsires="success";
+		    //me.opsires="success";
 		    if(response.error)alert(response.error.message);
 		    me.products=response.result;
 		    me.opsistat=stat;
@@ -58,14 +87,32 @@
 	    
 	};
 
+	// get products on Client with id
+	this.getinstalled=function(id){
+	    this.opsicall('installed','getInstalledLocalBootProductIds_list',id);
+	};
+
+	// get all available OPSi products
+	this.getproductinfos=function(){
+	    this.opsicall('productinfos','getProducts_listOfHashes');
+	};
+
 	this.logon();
 //	this.getprods();
+	this.getproductinfos(); 
+
+	this.refresh=function(id){
+	    this.getprods(id);
+	    this.getinstalled(id);
+	};
+
 
 	this.nonMS=function(name){
 //	    return true;
 	    if(name.match(/KB[0-9]+/))  return false;
 	    if(name.match(/Microsoft/)) return false;
-	    if(name.match(/^IE/)) return false;
+	    if(name.match(/^[iI][Ee]/)) return false;
+	    if(name.match(/^Windows/)) return false;
 	    return true;
 	}
 
@@ -75,9 +122,53 @@
 	    return this.products[0];
 	};
 
+	this.pattern=swpattern;
+
+	this.reason=function(name){
+	    for(p in this.pattern){
+		if(name.match(p))
+		    return this.pattern[p];
+	    }
+	    
+	};
+	
+	// guess the corresponding OPSI productId from the Windows Product name
+	this.opsiProdId=function(name){
+	    for(i=0; i<this.productinfos.length;i++){
+		p=this.productinfos[i];
+		if(p.name && name.match(p.name)||name.match(p.productId))
+		    return p.productId;
+	    }
+	    return null;
+	};
+	// convenience: is this an OPSI product?
+	this.isOpsi=function(name){
+	    return (null != this.opsiProdId(name));
+	};
+
+
+
     });
 
 
+    var swpattern={'^Java':'Oracle',
+		   '^Mozilla ':'Mozilla Public',
+		   '^Foxit':'erworben',
+		   '^Symantec':'BW',
+		   '^sprh':'GVK',
+		   '^shiph':'GVK',
+		   '^OpenOff':'OpenSource',
+		   '^Google':'Google Public',
+		   '^Adobe Flash':'Adobe Public',
+		   '^OpenSSL':'OpenSource',
+		   'HASP':'FKI RFID',
+		   'LibraryConversion':'FKI RFID',
+		   '^Camtasia':'',
+		   '^Python':'OpenSource',
+		   '^MagicInfo':'erworben',
+		   
+
+		  };
 
 
 

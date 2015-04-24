@@ -5,29 +5,16 @@
     <script type="text/javascript" src="angular.js"></script>
     <!-- script type="text/javascript" src="angular-resource.js"></script -->
     <script type="text/javascript" src="swinv.js"></script>
+    <script type="text/javascript" src="swpattern.js"></script>
+</head>
 
-
-  </head>
 <body ng-controller="swinvController as sw">
 
 <div class="swlist">
 
- ClientId {{sw.products[0].clientId}} <input id="inputId" ng-model="clientId"></input>
-<button ng-click="sw.getprods(clientId)">refresh List</button>
-
-<table border>
-  <tr><th>#</th><th>name</th><th>license</th><th>Version</th><th>verantwortlich</th></tr>
-
-<tr ng-repeat="swp in sw.products" ng-show="sw.nonMS(swp.name)">
-<td>{{$index}}
-<td>{{swp.name}} </td>
-<td>{{swp.licenseKey}}</td>
-<td><span ng-show="swp.version"> ({{swp.version}})</span></td>
-<td></td>
-</tr>
-</table>
-
-<p ng-click="sw.getprods('0024e81bc792.ub.hsu-hh.de')">
+clientId {{sw.products[0].clientId}} <input id="inputId" ng-model="sw.clientId"></input>
+<button ng-click="sw.refresh(sw.clientId)">refresh List</button>
+<p ng-click="sw.refresh('0024e81bc792.ub.hsu-hh.de')">
 response: {{sw.opsires}}
 <p>
 stat: {{sw.opsistat}}
@@ -35,6 +22,37 @@ stat: {{sw.opsistat}}
 head: {{sw.opsihead}}
 <p>
 conf: {{sw.opsiconf}}
+
+<table border >
+  <tr><th>#</th><th>name</th><th>license</th><th>Version</th><th>verantwortlich</th></tr>
+
+<tr ng-repeat="swp in sw.products" ng-show="sw.nonMS(swp.name)">
+<td>{{$index}}
+<td>{{swp.name}} </td>
+<td>{{sw.reason(swp.name)}}</td>
+<td><span ng-show="swp.version"> ({{swp.version}})</span></td>
+<td><span ng-show="sw.isOpsi(swp.name)">opsi: </span>{{sw.opsiProdId(swp.name)}}</td>
+</tr>
+</table>
+
+opsi products on clientId {{sw.clientId}}
+<table border>
+  <tr><th>OpsiProduct</th></tr>
+  <tr ng-repeat="inst in sw.installed">
+    <td>{{inst}}</td>
+  </tr>
+</table>
+
+<table border width="100%">
+  <tr><th>ProductInfo</th><th>productId</th><th>...............................................</th></tr>
+  <tr ng-repeat="prod in sw.productinfos">
+    
+    <td>{{prod.productId}}</td>
+    <td>{{prod.name}}</td>
+    <td></td>
+  </tr>
+</table>
+
 </div>
 </body>
 </html>
