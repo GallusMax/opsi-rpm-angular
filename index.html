@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="opsi-swinv">
 <head>
-    <!-- link rel="stylesheet" type="text/css" href="/wp-content/themes/hsu-web/style.css" -->
+    <!-- link rel="stylesheet" type="text/css" href="https://ub.hsu-hh.de/wp-content/themes/hsu-web/style.css" -->
     <script type="text/javascript" src="angular.js"></script>
     <!-- script type="text/javascript" src="angular-resource.js"></script -->
     <script type="text/javascript" src="swinv.js"></script>
@@ -14,25 +14,24 @@
 
  <label><input id="inputId" ng-model="sw.clientId"></input></label>
 <button ng-click="sw.refresh(sw.clientId)">refresh List</button>
-<br/><label><input type="checkbox" ng-model="sw.showopsiinstalled" />show OPSI installed  Products<br/><label><input type="checkbox" ng-model="sw.showallprods" />show all Products</label>
+<br/><label><input type="checkbox" ng-model="sw.showopsiinstalled" />show OPSI installed  Products<br/><label><input type="checkbox" ng-model="sw.showallprods" />show available Products</label>
 </label>
 
   <p ng-click="sw.refresh('0024e81bc792.ub.hsu-hh.de')"> </p>
 
 <table border >
-  <tr><th>#</th><th>name</th><th>license</th><th>Version</th><th>verantwortlich</th></tr>
+  <tr><th>name</th><th>Version</th><th>license</th><th>verantwortlich</th></tr>
 
 <tr ng-repeat="swp in sw.products" ng-show="sw.nonMS(swp.name)">
-<td>{{$index}}
 <td>{{swp.name}} </td>
+<td><span ng-show="swp.version"> {{swp.version}}</span></td>
 <td>{{sw.reason(swp.name)}}</td>
-<td><span ng-show="swp.version"> ({{swp.version}})</span></td>
 <td><span ng-show="sw.isOpsi(swp.name)">opsi: </span>{{sw.opsiProdId(swp.name)}}</td>
 </tr>
 </table>
 
 <div ng-show="sw.showopsiinstalled">
-opsi products on clientId {{sw.clientId}}
+installed OPSI products on this client ({{sw.clientId}})
 <table border>
   <tr><th>OpsiProduct</th></tr>
   <tr ng-repeat="inst in sw.installed">

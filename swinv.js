@@ -75,6 +75,7 @@
 	    $http.post(logonurl,this.logonParams)
 		.success(function(response){
 //		    alert($filter('json')(response));
+		    me.refresh(me.clientId);
 		})
 		.error(function(response){
 		    alert("err: "+(response));
@@ -126,17 +127,25 @@
 	    }
 	};
 
-
-	this.refresh(this.clientId);
+	// now triggered after successful login
+//	this.refresh(this.clientId); 
 
 	this.nonMS=function(name){
 //	    return true;
+	    if(name.match(/AddressBook/)) return false;
+	    if(name.match(/^Connection Manager/)) return false;
+	    if(name.match(/^DirectDrawEx/)) return false;
+	    if(name.match(/^DXM_Runtime/)) return false;
+	    if(name.match(/^Fontcore/)) return false;
 	    if(name.match(/KB[0-9]+/))  return false;
 	    if(name.match(/Microsoft/)) return false;
+	    if(name.match(/^MPlayer2/)) return false;
+	    if(name.match(/^Outlook/)) return false;
 	    if(name.match(/^[iI][Ee]/)) return false;
 	    if(name.match(/^Windows/)) return false;
-	    if(name.match(/AddressBook/)) return false;
-	    if(name.match(/MobileOptionPack/)) return false;
+	    if(name.match(/^MobileOptionPack/)) return false;
+	    if(name.match(/^SchedulingAgent/)) return false;
+	    if(name.match(/^WIC/)) return false;
 	    return true;
 	}
 
@@ -175,10 +184,12 @@
     });
 
 
-    var swpattern={'^Java':'Oracle',
+    var swpattern={'^Audacity':'OpenSource',
+		   '^Java':'Oracle',
 		   '^Mozilla ':'Mozilla Public',
 		   '^Foxit':'erworben',
-		   '^Symantec':'BW',
+		   '^Symantec':'SW Agreement',
+		   '^LiveUpdate':'SW Agreement',
 		   '^sprh':'GVK',
 		   '^shiph':'GVK',
 		   '^OpenOff':'OpenSource',
