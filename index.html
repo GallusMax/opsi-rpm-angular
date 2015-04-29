@@ -12,16 +12,12 @@
 
 <div class="swlist">
 
-clientId {{sw.products[0].clientId}} <input id="inputId" ng-model="sw.clientId"></input>
+ <label><input id="inputId" ng-model="sw.clientId"></input></label>
 <button ng-click="sw.refresh(sw.clientId)">refresh List</button>
-<p ng-click="sw.refresh('0024e81bc792.ub.hsu-hh.de')">
-response: {{sw.opsires}}
-<p>
-stat: {{sw.opsistat}}
-<p>
-head: {{sw.opsihead}}
-<p>
-conf: {{sw.opsiconf}}
+<br/><label><input type="checkbox" ng-model="sw.showopsiinstalled" />show OPSI installed  Products<br/><label><input type="checkbox" ng-model="sw.showallprods" />show all Products</label>
+</label>
+
+  <p ng-click="sw.refresh('0024e81bc792.ub.hsu-hh.de')"> </p>
 
 <table border >
   <tr><th>#</th><th>name</th><th>license</th><th>Version</th><th>verantwortlich</th></tr>
@@ -35,6 +31,7 @@ conf: {{sw.opsiconf}}
 </tr>
 </table>
 
+<div ng-show="sw.showopsiinstalled">
 opsi products on clientId {{sw.clientId}}
 <table border>
   <tr><th>OpsiProduct</th></tr>
@@ -42,8 +39,9 @@ opsi products on clientId {{sw.clientId}}
     <td>{{inst}}</td>
   </tr>
 </table>
+</div>
 
-<table border width="100%">
+<table ng-show="sw.showallprods" border width="100%">
   <tr><th>ProductInfo</th><th>productId</th><th>...............................................</th></tr>
   <tr ng-repeat="prod in sw.productinfos">
     

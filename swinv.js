@@ -3,6 +3,8 @@
   
     app.controller('swinvController',function($http,$filter){
 
+	this.showallprods=0;
+	this.showopsiinstalled=0;
 //	this.products=opsiswp.result;
 	this.baseurl="/interface?{%20%22id%22:%201,%20%22method%22:%20%22auditSoftware_getObjects%22,%20%22params%22:%20[]%20}";
 	baseurl='/rpc';
@@ -27,6 +29,23 @@
 	me=this;
 	me['installed']=[];
 	me['productinfos']=[];
+
+	this.allProdClicked=function(check){
+	    alert($filter('json')(check));
+	};
+
+	this.jsonParmDns=function(){
+	    this.search=window.location.search;
+	    if (this.search.match(/dns/)){ // we believe in barcode like {"dns":"<clientId>"}
+		var qsearch=decodeURIComponent(this.search).match(/{.+dns.+:.+}/);
+		var jsonsearch=decodeURIComponent(qsearch); // get the json 
+//		alert(qsearch+" : "+jsonsearch);
+//		return jsonsearch;
+		return angular.fromJson(jsonsearch).dns;
+//		return JSON.parse(jsonsearch).dns;
+	    }
+	    return null;
+	};
 
 	this.opsicall=function(field,method,arg){
     	    Params={'id':'1','method':method,'params':[]};
@@ -69,7 +88,6 @@
 	    $http.post(baseurl,this.auditParams)
 		.success(function(response,stat,head,conf){
 		   // alert("success: "+response);
-		    //me.opsires="success";
 		    if(response.error)alert(response.error.message);
 		    me.products=response.result;
 		    me.opsistat=stat;
@@ -98,14 +116,18 @@
 	};
 
 	this.logon();
-//	this.getprods();
+	this.clientId=this.jsonParmDns();
 	this.getproductinfos(); 
 
 	this.refresh=function(id){
-	    this.getprods(id);
-	    this.getinstalled(id);
+	    if(null != id){
+		this.getprods(id);
+		this.getinstalled(id);
+	    }
 	};
 
+
+	this.refresh(this.clientId);
 
 	this.nonMS=function(name){
 //	    return true;
@@ -113,6 +135,8 @@
 	    if(name.match(/Microsoft/)) return false;
 	    if(name.match(/^[iI][Ee]/)) return false;
 	    if(name.match(/^Windows/)) return false;
+	    if(name.match(/AddressBook/)) return false;
+	    if(name.match(/MobileOptionPack/)) return false;
 	    return true;
 	}
 
@@ -166,7 +190,8 @@
 		   '^Camtasia':'',
 		   '^Python':'OpenSource',
 		   '^MagicInfo':'erworben',
-		   
+		   '^Sentinel':'FKI RFID',
+		   '^KeyboardRF':'FKI RFID'
 
 		  };
 
