@@ -5,24 +5,14 @@
 
 	this.showallprods=0;
 	this.showopsiinstalled=0;
-//	this.products=opsiswp.result;
-	this.baseurl="/interface?{%20%22id%22:%201,%20%22method%22:%20%22auditSoftware_getObjects%22,%20%22params%22:%20[]%20}";
 	baseurl='/rpc';
 	logonurl='https://opsireader:opsipass@'+window.location.host+'/rpc';
-	this.testurl='/interface?{"id":1,"method":"auditSoftware_getObjects","params":[]}';
+
+	this.clientId="defaultclient.ub.hsu-hh.de";
 
 	this.auditParams={'id':'jsonrpc','method':'auditSoftwareOnClient_getObjects','params':[]};
-	this.logonParams={'id':'1','method':'authenticated','params':[]};
-	this.localinstalledParams={'id':'1','method':'getInstalledLocalBootProductIds_list','params':[]};
-	this.productinfosParams={'id':'1','method':'getProductInfos_hash','params':[]};
-
 	this.auditParams.params.push([]);
-//	this.auditParams.params.push({"clientId":"0024e81bc792.ub.hsu-hh.de"});
-	this.auditParams.params.push({"clientId":"782bcbb49fd9.ub.hsu-hh.de"}); // goihl
-
-	this.clientId="782bcbb49fd9.ub.hsu-hh.de";
-
-	this.getObj={'method':'jsonp','url':baseurl,'params':this.auditParams}; // gets mangled
+	this.auditParams.params.push({"clientId":"defaultclient.ub.hsu-hh.de"});
 
 	opsiURL=baseurl+"?"+$filter('json')(this.auditParams);
 
@@ -30,17 +20,11 @@
 	me['installed']=[];
 	me['productinfos']=[];
 
-	this.allProdClicked=function(check){
-	    alert($filter('json')(check));
-	};
-
 	this.jsonParmDns=function(){
 	    this.search=window.location.search;
 	    if (this.search.match(/dns/)){ // we believe in barcode like {"dns":"<clientId>"}
 		var qsearch=decodeURIComponent(this.search).match(/{.+dns.+:.+}/);
 		var jsonsearch=decodeURIComponent(qsearch); // get the json 
-//		alert(qsearch+" : "+jsonsearch);
-//		return jsonsearch;
 		return angular.fromJson(jsonsearch).dns;
 //		return JSON.parse(jsonsearch).dns;
 	    }
@@ -74,7 +58,9 @@
 	this.logon=function(){
 	    $http.post(logonurl,this.logonParams)
 		.success(function(response){
-//		    alert($filter('json')(response));
+//		    alert("success: "+$filter('json')(response));
+		    // call after logon success
+		    me.getproductinfos(); 
 		    me.refresh(me.clientId);
 		})
 		.error(function(response){
@@ -85,7 +71,6 @@
 	this.getprods=function(id){
 	    this.opsires="calling.. "+id;
 	    if(id)this.auditParams.params[1].clientId=id;
-//	    this.opsistat=$filter('json')(this.getObj);
 	    $http.post(baseurl,this.auditParams)
 		.success(function(response,stat,head,conf){
 		   // alert("success: "+response);
@@ -102,7 +87,6 @@
 		    me.opsihead=head;
 		    me.opsiconf=conf;
 		});
-//	    this.opsihead="call done";
 	    
 	};
 
@@ -118,7 +102,7 @@
 
 	this.logon();
 	this.clientId=this.jsonParmDns();
-	this.getproductinfos(); 
+//	this.getproductinfos(); 
 
 	this.refresh=function(id){
 	    if(null != id){
@@ -127,8 +111,6 @@
 	    }
 	};
 
-	// now triggered after successful login
-//	this.refresh(this.clientId); 
 
 	this.nonMS=function(name){
 //	    return true;
@@ -149,11 +131,6 @@
 	    return true;
 	}
 
-	this.getfirst=function(){
-	    this.opsires="init";
-//	    alert(this.opsires);
-	    return this.products[0];
-	};
 
 	this.pattern=swpattern;
 
@@ -178,7 +155,14 @@
 	this.isOpsi=function(name){
 	    return (null != this.opsiProdId(name));
 	};
-
+	
+	// mark rows w/o reason/license
+	this.csswarn=function(name){
+	    if(this.isOpsi(name) || this.reason(name))
+		return "ng-binding";
+	    else
+		return "warn";
+	};
 
 
     });
@@ -187,7 +171,7 @@
     var swpattern={'^Audacity':'OpenSource',
 		   '^Java':'Oracle',
 		   '^Mozilla ':'Mozilla Public',
-		   '^Foxit':'erworben',
+		   '^Foxit':'Agreement',
 		   '^Symantec':'SW Agreement',
 		   '^LiveUpdate':'SW Agreement',
 		   '^sprh':'GVK',
@@ -200,72 +184,13 @@
 		   'LibraryConversion':'FKI RFID',
 		   '^Camtasia':'',
 		   '^Python':'OpenSource',
-		   '^MagicInfo':'erworben',
+		   '^MagicInfo':'Agreement',
 		   '^Sentinel':'FKI RFID',
 		   '^KeyboardRF':'FKI RFID'
 
 		  };
 
 
-
-
-var opsiswp =  
-{
-"id": 1,
-"result": [
-{
-"windowsDisplayVersion": "",
-"ident": "AddressBook;;;;x86",
-"name": "AddressBook",
-"windowsSoftwareId": "addressbook",
-"windowsDisplayName": "",
-"installSize": -1,
-"subVersion": "",
-"language": "",
-"version": "",
-"architecture": "x86",
-"type": "AuditSoftware"
-},
-{
-"windowsDisplayVersion": "12.0.0.77",
-"ident": "Adobe Flash Player 12 Plugin;12.0.0.77;;;x86",
-"name": "Adobe Flash Player 12 Plugin",
-"windowsSoftwareId": "{9d32cd07-ea5c-4a79-b976-c0c7f975ede4}",
-"windowsDisplayName": "Adobe Flash Player 12 Plugin",
-"installSize": -1,
-"subVersion": "",
-"language": "",
-"version": "12.0.0.77",
-"architecture": "x86",
-"type": "AuditSoftware"
-},
-{
-"windowsDisplayVersion": "",
-"ident": "Branding;;;;x86",
-"name": "Branding",
-"windowsSoftwareId": "branding",
-"windowsDisplayName": "",
-"installSize": -1,
-"subVersion": "",
-"language": "",
-"version": "",
-"architecture": "x86",
-"type": "AuditSoftware"
-},
-{
-"windowsDisplayVersion": "",
-"ident": "Connection Manager;;;;x86",
-"name": "Connection Manager",
-"windowsSoftwareId": "connection manager",
-"windowsDisplayName": "",
-"installSize": -1,
-"subVersion": "",
-"language": "",
-"version": "",
-"architecture": "x86",
-"type": "AuditSoftware"
-}
-]};
 
 
 })();

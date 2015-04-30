@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="opsi-swinv">
 <head>
-    <!-- link rel="stylesheet" type="text/css" href="https://ub.hsu-hh.de/wp-content/themes/hsu-web/style.css" -->
+    <link rel="stylesheet" type="text/css" href="swinv.css" >
     <script type="text/javascript" src="angular.js"></script>
     <!-- script type="text/javascript" src="angular-resource.js"></script -->
     <script type="text/javascript" src="swinv.js"></script>
@@ -12,26 +12,23 @@
 
 <div class="swlist">
 
- <label><input id="inputId" ng-model="sw.clientId"></input></label>
-<button ng-click="sw.refresh(sw.clientId)">refresh List</button>
-<br/><label><input type="checkbox" ng-model="sw.showopsiinstalled" />show OPSI installed  Products<br/><label><input type="checkbox" ng-model="sw.showallprods" />show available Products</label>
-</label>
+<input id="inputId" ng-model="sw.clientId"></input>
+<button ng-click="sw.refresh(sw.clientId)">refresh list</button>
 
-  <p ng-click="sw.refresh('0024e81bc792.ub.hsu-hh.de')"> </p>
 
 <table border >
-  <tr><th>name</th><th>Version</th><th>license</th><th>verantwortlich</th></tr>
+  <tr><th>Name</th><th>Version</th><th>Lizenz</th><th>Installationsgrund</th></tr>
 
 <tr ng-repeat="swp in sw.products" ng-show="sw.nonMS(swp.name)">
 <td>{{swp.name}} </td>
-<td><span ng-show="swp.version"> {{swp.version}}</span></td>
+<td> {{swp.version}}</td>
 <td>{{sw.reason(swp.name)}}</td>
-<td><span ng-show="sw.isOpsi(swp.name)">opsi: </span>{{sw.opsiProdId(swp.name)}}</td>
+<td class={{sw.csswarn(swp.name)}}><span ng-show="!sw.isOpsi(swp.name)">{{sw.reason(swp.name)}} </span>{{sw.opsiProdId(swp.name)}}</td>
 </tr>
 </table>
 
+<br/><label><input type="checkbox" ng-model="sw.showopsiinstalled" />installed OPSI products on this client <span>({{sw.clientId}})</span></label>
 <div ng-show="sw.showopsiinstalled">
-installed OPSI products on this client ({{sw.clientId}})
 <table border>
   <tr><th>OpsiProduct</th></tr>
   <tr ng-repeat="inst in sw.installed">
@@ -40,8 +37,9 @@ installed OPSI products on this client ({{sw.clientId}})
 </table>
 </div>
 
+<br/><label><input type="checkbox" ng-model="sw.showallprods" />available products</label>
 <table ng-show="sw.showallprods" border width="100%">
-  <tr><th>ProductInfo</th><th>productId</th><th>...............................................</th></tr>
+  <tr><th>productInfo</th><th>productId</th><th>...............................................</th></tr>
   <tr ng-repeat="prod in sw.productinfos">
     
     <td>{{prod.productId}}</td>

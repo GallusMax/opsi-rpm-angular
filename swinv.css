@@ -1,0 +1,40 @@
+body {
+    font-family: "Comic Sans M$", Arial, Helvetica, sans-serif;
+}
+
+table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td, th {
+    font-size: 1em;
+    border: 1px solid #aa0093;
+    padding: 3px 7px 2px 7px;
+}
+
+th {
+    font-size: 1.1em;
+    text-align: left;
+    padding-top: 5px;
+    padding-bottom: 4px;
+    background-color: #d30c6b;
+    color: #ffffff;
+}
+
+label{
+    background-color: #d30c6b;
+    color: #ffffff;
+}
+
+
+td.warn {
+/* enhance unlicensed products*/
+    color: #000000;
+    background-color: yellow;
+}
+
+.ng-binding{
+//    background-color: blue;
+font-family: Courier;
+}
