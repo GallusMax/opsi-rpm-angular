@@ -6,13 +6,13 @@
 	this.showallprods=0;
 	this.showopsiinstalled=0;
 	baseurl='/rpc';
-	logonurl='https://opsireader:opsipass@'+window.location.host+'/rpc';
+	logonurl='https://testerMemberOfGroupopsireader:unGuessablePassword@'+window.location.host+'/rpc';
 
-	this.clientId="defaultclient.ub.hsu-hh.de";
+	this.clientId="defaultclient.domain.local";
 
 	this.auditParams={'id':'jsonrpc','method':'auditSoftwareOnClient_getObjects','params':[]};
 	this.auditParams.params.push([]);
-	this.auditParams.params.push({"clientId":"defaultclient.ub.hsu-hh.de"});
+	this.auditParams.params.push({"clientId":"defaultclient.domain.local"});
 
 	opsiURL=baseurl+"?"+$filter('json')(this.auditParams);
 
@@ -171,22 +171,11 @@
     var swpattern={'^Audacity':'OpenSource',
 		   '^Java':'Oracle',
 		   '^Mozilla ':'Mozilla Public',
-		   '^Foxit':'Agreement',
-		   '^Symantec':'SW Agreement',
-		   '^LiveUpdate':'SW Agreement',
-		   '^sprh':'GVK',
-		   '^shiph':'GVK',
 		   '^OpenOff':'OpenSource',
 		   '^Google':'Google Public',
 		   '^Adobe Flash':'Adobe Public',
 		   '^OpenSSL':'OpenSource',
-		   'HASP':'FKI RFID',
-		   'LibraryConversion':'FKI RFID',
-		   '^Camtasia':'',
-		   '^Python':'OpenSource',
-		   '^MagicInfo':'Agreement',
-		   '^Sentinel':'FKI RFID',
-		   '^KeyboardRF':'FKI RFID'
+		   '^Python':'OpenSource'
 
 		  };
 
